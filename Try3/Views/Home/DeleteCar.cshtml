@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete Car</title>
+</head>
+<body>
+    <div>
+        <h3>Deleting car</h3>
+        <form method="post" action="">
+            <input type="hidden" value="@ViewBag.DeletingId" name="Auto_Id" />
+            <table>
+                <tr>
+                    <td><p>Are you sure about deleting car with Id:@ViewBag.DeletingId</p></td>
+
+                </tr>
+                <tr><td><input type="submit" value="Yes!" /> </td><td></td></tr>
+                <tr><td><input type="button" onclick="window.location.href = '/';" value="No" /> </td><td></td></tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

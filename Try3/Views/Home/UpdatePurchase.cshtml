@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Update purchase</title>
+</head>
+<body>
+    <div>
+        <h3>Updating purchase</h3>
+        <form method="post" action="">
+            <input type="hidden" value=@ViewBag.Purchase_id name="Purchase_id" />
+            <table>
+                <tr>
+                    <td><p>Enter client surname</p></td>
+                    <td><input type="text" name="Client_Surname" value="@ViewBag.Client_Surname" /> </td>
+                </tr>
+                <tr>
+                    <td><p>Enter Auto Id:</p></td>
+                    <td>
+                        <input type="text" name="Auto_Id" value="@ViewBag.Auto_Id" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><p>Enter date of purchase:</p></td>
+                    <td>
+                        <input type="date" id="start" name="Date_Of_Purchase"
+                               value=@ViewBag.Date_Of_Purchase
+                               min="1900-01-01" max="2100-12-31">
+                    </td>
+                </tr>
+                <tr><td><input type="submit" value="Update purchase" /> </td><td></td></tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

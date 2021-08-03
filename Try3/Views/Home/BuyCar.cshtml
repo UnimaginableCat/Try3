@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Buying a car</title>
+</head>
+<body>
+    <div>
+        <h3>Buying a car</h3>
+        <form method="post" action="">
+            <input type="hidden" value="@ViewBag.BuyingId" name="Auto_id" />
+            <table>
+                <tr>
+                    <td><p>Car id:@ViewBag.BuyingId </p></td>
+                </tr>
+                <tr>
+                    <td><p>Enter buyer surname </p></td>
+                    <td><input type="text" name="Client_Surname" /> </td>
+                </tr>
+                <tr><td><input type="submit" value="Buy!" /> </td><td></td></tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

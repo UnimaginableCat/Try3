@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Update car</title>
+</head>
+<body>
+    <div>
+        <h3>Updating car</h3>
+        <form method="post" action="">
+            <input type="hidden" value=@ViewBag.Auto_Id name="Auto_Id" />
+            <table>
+                <tr>
+                    <td><p>Enter model</p></td>
+                    <td><input type="text" name="Model" value="@ViewBag.Model"/> </td>
+                </tr>
+                <tr>
+                    <td><p>Enter manufacturer:</p></td>
+                    <td>
+                        <input type="text" name="Manufacturer" value="@ViewBag.Manufacturer"/>
+                    </td>
+                </tr>
+                <tr><td><input type="submit" value="Update car" /> </td><td></td></tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>
