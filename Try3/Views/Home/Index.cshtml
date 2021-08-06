@@ -1,65 +1,53 @@
-﻿@model IEnumerable<Try3.Models.Automobiles>
+﻿@model Try3.Models.MyDatabase
 
 @{
-    Layout = null;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Auto sales</title>
-</head>
-<body>
-    <div>
-        <h3>Automobiles</h3>
-        <input type="button" onclick="window.location.href = '/Home/AddCar';" value="Add car" />
-        <table border="2">
-            <tr>
-                <td><p>Auto_Id</p></td>
-                <td><p>Model</p></td>
-                <td><p>Manufacturer</p></td>
-                <td><p>Buy</p></td>
-                <td><p>Update</p></td>
-                <td><p>Delete</p></td>
-            </tr>
-            @foreach (var m in ViewBag.Automobiles)
-            {
-                <tr>
-                    <td><p>@m.Auto_Id</p></td>
-                    <td><p>@m.Model</p></td>
-                    <td><p>@m.Manufacturer</p></td>
-                    <td><p><a href="/Home/BuyCar/@m.Auto_Id">Buy</a></p></td>
-                    <td><p><a href="/Home/UpdateCar/@m.Auto_Id">Update</a></p></td>
-                    <td><p><a href="/Home/DeleteCar/@m.Auto_Id">Delete</a></p></td>
-                </tr>
-            }
-        </table>
-    </div>
-    <div>
-        <h3>Sales</h3>
-        <table border="2">
-            <tr>
-                <td><p>Purchase_Id</p></td>
-                <td><p>Client_Surname</p></td>
-                <td><p>Auto_Id</p></td>
-                <td><p>Date_Of_Purchase</p></td>
-                <td><p>Update</p></td>
-                <td><p>Delete</p></td>
-            </tr>
-            @foreach (var p in ViewBag.Purchases)
-            {
-            <tr>
-                <td><p>@p.Purchase_Id</p></td>
-                <td><p>@p.Client_Surname</p></td>
-                <td><p>@p.Auto_Id</p></td>
-                <td><p>@p.Date_Of_Purchase</p></td>
-                <td><p><a href="/Home/UpdatePurchase/@p.Purchase_Id">Update</a></p></td>
-                <td><p><a href="/Home/DeletePurchase/@p.Purchase_Id">Delete</a></p></td>
-            </tr>
-            }
-        </table>
-    </div>
-</body>
-</html>
+<h3>
+    Automobiles
+    <input type="button" onclick="window.location.href = '/Home/AddCar';" value="Add car" />
+    <input type="button" onclick="window.location.href = '/Home/BuyCar';" value="Buy a car" />
+</h3>
+<table class="table">
+    <tr>
+        <td><p>Auto_Id</p></td>
+        <td><p>Model</p></td>
+        <td><p>Manufacturer</p></td>
+        <td><p></p></td>
+        <td><p></p></td>
+    </tr>
+    @foreach (var m in Model.automobiles)
+    {
+        <tr>
+            <td><p>@m.Auto_Id</p></td>
+            <td><p>@m.Model</p></td>
+            <td><p>@m.Manufacturer</p></td>
+            <td><p>@Html.ActionLink("Update", "UpdateCar", "Home", new { id = @m.Auto_Id }, null)</p></td>
+            <td><p>@Html.ActionLink("Delete", "DeleteCar", "Home", new { id = @m.Auto_Id }, null)</p></td>
+        </tr>
+    }
+</table>
+<h3>Sales</h3>
+<table class="table">
+    <tr>
+        <td><p>Purchase_Id</p></td>
+        <td><p>Client_Surname</p></td>
+        <td><p>Auto_Id</p></td>
+        <td><p>Date_Of_Purchase</p></td>
+        <td><p></p></td>
+        <td><p></p></td>
+    </tr>
+    @foreach (var p in Model.purchases)
+    {
+        <tr>
+            <td><p>@p.Purchase_Id</p></td>
+            <td><p>@p.Client_Surname</p></td>
+            <td><p>@p.Auto_Id</p></td>
+            <td><p>@p.Date_Of_Purchase</p></td>
+            <td><p>@Html.ActionLink("Update", "UpdatePurchase", "Home", new { id = @p.Purchase_Id }, null)</p></td>
+            <td><p>@Html.ActionLink("Delete", "DeletePurchase", "Home", new { id = @p.Purchase_Id }, null)</p></td>
+        </tr>
+    }
+</table>

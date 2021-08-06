@@ -128,6 +128,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Automobiles.cs" />
+    <Compile Include="Models\MyDatabase.cs" />
     <Compile Include="Models\Purchases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -166,16 +167,22 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\AddCar.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\DeleteCar.cshtml" />
-    <Content Include="Views\Home\BuyCar.cshtml" />
+    <Content Include="Views\Home\Deleted.cshtml" />
     <Content Include="Views\Home\UpdateCar.cshtml" />
-    <Content Include="Views\Home\UpdatePurchase.cshtml" />
+    <Content Include="Views\Home\Updated.cshtml" />
+    <Content Include="Views\Home\BuyCar.cshtml" />
+    <Content Include="Views\Home\CarBought.cshtml" />
     <Content Include="Views\Home\DeletePurchase.cshtml" />
+    <Content Include="Views\Home\PurchaseDeleted.cshtml" />
+    <Content Include="Views\Home\UpdatePurchase.cshtml" />
+    <Content Include="Views\Home\PurchaseUpdated.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Car\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

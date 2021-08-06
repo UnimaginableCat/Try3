@@ -1,27 +1,52 @@
-﻿@{
-    Layout = null;
+﻿@model Try3.Models.Automobiles
+
+@{
+    ViewBag.Title = "DeleteCar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Delete Car</title>
-</head>
-<body>
-    <div>
-        <h3>Deleting car</h3>
-        <form method="post" action="">
-            <input type="hidden" value="@ViewBag.DeletingId" name="Auto_Id" />
-            <table>
-                <tr>
-                    <td><p>Are you sure about deleting car with Id:@ViewBag.DeletingId</p></td>
+<h2>DeleteCar</h2>
 
-                </tr>
-                <tr><td><input type="submit" value="Yes!" /> </td><td></td></tr>
-                <tr><td><input type="button" onclick="window.location.href = '/';" value="No" /> </td><td></td></tr>
-            </table>
-        </form>
-    </div>
-</body>
-</html>
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Automobiles</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Auto_Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Auto_Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Model)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Model)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Manufacturer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Manufacturer)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("Auto_Id", Model.Auto_Id)
+        @Html.Hidden("Model", Model.Model)
+        @Html.Hidden("Manufacturer", Model.Manufacturer)
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to Home", "Index")
+        </div>
+    }
+</div>

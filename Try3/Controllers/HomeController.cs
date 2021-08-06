@@ -13,19 +13,20 @@ namespace Try3.Controllers
     public class HomeController : Controller
     {
         string conString = @"Server=DESKTOP-6R3R8GU\SQLEXPRESS;Database=Automobile_Sales;Trusted_Connection=True;";
-
+        MyDatabase myDb = new MyDatabase();
         public ActionResult Index()
         {
-            List<Automobiles> automobiles = new List<Automobiles>();
-            List<Purchases> purchases = new List<Purchases>();
-            using (IDbConnection db = new SqlConnection(conString))
+            
+            //List<Automobiles> automobiles = new List<Automobiles>();
+            //List<Purchases> purchases = new List<Purchases>();
+            using (var db = new SqlConnection(conString))
             {
-                automobiles = db.Query<Automobiles>("Select * From Automobiles").ToList();
-                purchases = db.Query<Purchases>("Select * From Purchases").ToList();
+                myDb.automobiles = db.Query<Automobiles>("Select * From Automobiles").ToList();
+                myDb.purchases = db.Query<Purchases>("Select * From Purchases").ToList();
             }
-            ViewBag.Automobiles = automobiles;
-            ViewBag.Purchases = purchases;
-            return View();
+            //ViewBag.Automobiles = automobiles;
+            //ViewBag.Purchases = purchases;
+            return View(myDb);
         }
 
         public ActionResult About()
@@ -43,76 +44,90 @@ namespace Try3.Controllers
         }
 
         [HttpGet]
-        public ActionResult DeletePurchase(int? id)
+        public ActionResult DeletePurchase(int id)
         {
-            ViewBag.DeletingId = id;
-            return View();
+            var purchase = new Purchases();
+            using (var db = new SqlConnection(conString))
+            {
+                purchase = db.Query<Purchases>("Select * from Purchases where Purchase_Id=@Id", new { Id = id }).First();
+            }
+            return View(purchase);
         }
 
         [HttpPost]
-        public string DeletePurchase(int id)
+        public ActionResult DeletePurchase(Purchases purchase)
         {
+            var sql = "delete from Purchases where Purchase_Id=@Id";
             try
             {
-                using (SqlConnection connection = new SqlConnection(conString))
+                using (var db = new SqlConnection(conString))
                 {
-                    SqlCommand cmd = new SqlCommand("delete from Purchases where Purchase_Id=@Id", connection);
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                    db.Execute(sql, new { Id = purchase.Purchase_Id });
                 }
-                return "Purchase deleted" + " <a href=' / '>Return to main page</a>";
+                return View("PurchaseDeleted");
             }
             catch
             {
-                return "Something went wrong";
+                return View("PurchaseDeleted");
             }
         }
 
 
         [HttpPost]
-        public string UpdatePurchase(int Purchase_Id, string Client_Surname, int Auto_Id, DateTime Date_Of_Purchase)
+        public ActionResult UpdatePurchase(Purchases purchase)
         {
-            try
+            var sql = "update Purchases set Client_Surname=@Client_Surname, Auto_Id = @Auto_Id, Date_Of_Purchase = @Date_Of_Purchase where Purchase_Id = @Purchase_Id";
+            if (ModelState.IsValid)
             {
-                using (SqlConnection connection = new SqlConnection(conString))
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("update Purchases set Client_Surname=@Client_Surname, Auto_Id = @Auto_Id, Date_Of_Purchase = @Date_Of_Purchase where Purchase_Id = @Purchase_Id", connection);
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@Client_Surname", Client_Surname);
-                    cmd.Parameters.AddWithValue("@Auto_Id", Auto_Id);
-                    cmd.Parameters.AddWithValue("@Date_Of_Purchase", Date_Of_Purchase);
-                    cmd.Parameters.AddWithValue("@Purchase_Id", Purchase_Id);
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                    using (var db = new SqlConnection(conString))
+                    {
+                        db.Execute(sql, new { Client_Surname = purchase.Client_Surname, Auto_Id = purchase.Auto_Id, Date_Of_Purchase = purchase.Date_Of_Purchase, Purchase_Id = purchase.Purchase_Id });
+                    }
+                    return View("PurchaseUpdated");
                 }
-                return "Purchase updated" + " <a href=' / '>Return to main page</a>";
+                catch
+                {
+                    return View("PurchaseUpdated");
+                }
             }
-            catch
+            else
             {
-                return "Something went wrong";
+                var sql2 = "select Auto_Id, Model from automobiles";
+                using (var db = new SqlConnection(conString))
+                {
+                    var selList = db.Query<Automobiles>(sql2);
+                    ViewBag.aList = new SelectList(selList, "Auto_Id", "Model");
+                    ViewBag.DPurchase = purchase.Date_Of_Purchase.ToString("yyyy-MM-dd");
+                }
+                return View(purchase);
             }
         }
 
         [HttpGet]
-        public ActionResult UpdatePurchase(int? id)
+        public ActionResult UpdatePurchase(int id)
         {
+            var sql = "select Auto_Id, Model from automobiles";
+            var purchase = new Purchases();
             try
             {
-                using (IDbConnection db = new SqlConnection(conString))
+                using (var db = new SqlConnection(conString))
                 {
-                    Purchases purchase = db.Query<Purchases>("Select * from Purchases where Purchase_Id=" + id).First();
-                    ViewBag.Purchase_Id = purchase.Purchase_Id;
-                    ViewBag.Client_Surname = purchase.Client_Surname;
-                    ViewBag.Auto_Id = purchase.Auto_Id;
-                    ViewBag.Date_Of_Purchase = purchase.Date_Of_Purchase.ToString("yyyy-MM-dd");
+                    purchase = db.Query<Purchases>("Select * from Purchases where Purchase_Id=@Id", new { Id = id }).First();
+                    var selList = db.Query<Automobiles>(sql);
+                    ViewBag.aList = new SelectList(selList, "Auto_Id", "Model");
+                    ViewBag.DPurchase = purchase.Date_Of_Purchase.ToString("yyyy-MM-dd");
+                    /*                    ViewBag.Purchase_Id = purchase.Purchase_Id;
+                                        ViewBag.Client_Surname = purchase.Client_Surname;
+                                        ViewBag.Auto_Id = purchase.Auto_Id;
+                                        */
                 }
-                return View();
+                return View(purchase);
             }
             catch
             {
-                return View();
+                return View(purchase);
             }
         }
 
@@ -120,130 +135,143 @@ namespace Try3.Controllers
         [HttpGet]
         public ActionResult UpdateCar(int? id)
         {
+            var automobile = new Automobiles();
             try
             {
-                using (IDbConnection db = new SqlConnection(conString))
+                using (var db = new SqlConnection(conString))
                 {
-                    Automobiles automobile = db.Query<Automobiles>("Select * from Automobiles where Auto_id=" + id).First();
-                    ViewBag.Auto_Id = automobile.Auto_Id;
-                    ViewBag.Model = automobile.Model;
-                    ViewBag.Manufacturer = automobile.Manufacturer;
+                    automobile = db.Query<Automobiles>("Select * from Automobiles where Auto_id=@A_Id", new { A_Id = id }).First();
                 }
-                return View();
+                return View(automobile);
             }
             catch
             {
-                return View();
+                return View(automobile);
             }            
         }
 
         [HttpPost]
-        public string UpdateCar(int Auto_id, string Model,string Manufacturer)
+        public ActionResult UpdateCar(Automobiles auto)
         {
-            try
+            var sql = "update automobiles set Model=@Mod, Manufacturer = @Manufact where Auto_id = @A_id";
+            if (ModelState.IsValid)
             {
-                using (SqlConnection connection = new SqlConnection(conString))
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("update automobiles set Model=@model, Manufacturer = @Manufacturer where Auto_id = @auto_id", connection);
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@Model", Model);
-                    cmd.Parameters.AddWithValue("@Manufacturer", Manufacturer);
-                    cmd.Parameters.AddWithValue("@Auto_id", Auto_id);
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                    using (var db = new SqlConnection(conString))
+                    {
+                        db.Execute(sql, new { Mod = auto.Model, Manufact = auto.Manufacturer, A_id = auto.Auto_Id });
+                    }
+                    return View("Updated");
                 }
-                return "Car updated" + " <a href=' / '>Return to main page</a>";
+                catch
+                {
+                    return View("Updated");
+                }
             }
-            catch
-            {
-                return "Something went wrong";
-            }
+            return View(auto);
         }
 
-            [HttpGet]
-        public ActionResult BuyCar(int? id)
+        [HttpGet]
+        public ActionResult BuyCar()
         {
-            ViewBag.BuyingId = id;
-            return View();
+            var sql = "select Auto_Id, Model from automobiles";
+            var purchases = new Purchases();
+            using (var db = new SqlConnection(conString))
+            {
+                var selList = db.Query<Automobiles>(sql);
+                ViewBag.aList = new SelectList(selList, "Auto_Id", "Model");
+            }
+            return View(purchases);
         }
 
         [HttpPost]
-        public string BuyCar(int Auto_Id, string Client_Surname)
+        public ActionResult BuyCar(Purchases purchase)
         {
-            try
+            var sql = "insert into Purchases values(@Surname, @A_Id, @Date)";
+            if (ModelState.IsValid)
             {
-                using (SqlConnection connection = new SqlConnection(conString))
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("insert into Purchases values(@Surname,@Auto_Id,@Date)", connection);
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@Surname", Client_Surname);
-                    cmd.Parameters.AddWithValue("@Auto_Id", Auto_Id);
-                    cmd.Parameters.AddWithValue("@Date", DateTime.Now);
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                    using (var db = new SqlConnection(conString))
+                    {
+                        db.Execute(sql, new { Date = DateTime.Now, Surname = purchase.Client_Surname, A_Id = purchase.Auto_Id });
+                    }
+                    return View("CarBought");
                 }
-                return "Car bought" + " <a href=' / '>Return to main page</a>";
+                catch
+                {
+                    return View("CarBought");
+                }
             }
-            catch
+            else
             {
-                return "Something went wrong";
+                var sql2 = "select Auto_Id, Model from automobiles";
+                using (var db = new SqlConnection(conString))
+                {
+                    var selList = db.Query<Automobiles>(sql2);
+                    ViewBag.aList = new SelectList(selList, "Auto_Id", "Model");
+                }
+                return View(purchase);
             }
         }
 
         [HttpGet]
-        public ActionResult DeleteCar(int? id)
+        public ActionResult DeleteCar(int id)
         {
-            ViewBag.DeletingId = id;
-            return View();
+            var auto = new Automobiles();
+            using (var db = new SqlConnection(conString))
+            {
+                auto = db.Query<Automobiles>("Select * from Automobiles where Auto_Id=@Id", new { Id = id }).First();
+            }
+            return View(auto);
         }
 
         [HttpPost]
-        public string DeleteCar(int id)
+        public ActionResult DeleteCar(Automobiles auto)
         {
+            var sql = "delete from Automobiles where Auto_Id=@Id";
             try
             {
-                using (SqlConnection connection = new SqlConnection(conString))
+                using (var db = new SqlConnection(conString))
                 {
-                    SqlCommand cmd = new SqlCommand("delete from Automobiles where Auto_Id=@Id", connection);
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                    db.Execute(sql, new { Id = auto.Auto_Id });
                 }
-                return "Car deleted" + " <a href=' / '>Return to main page</a>";
+                return View("Deleted");
             }
             catch
             {
-                return "Something went wrong";
+                return View("Deleted");
             }
         }
 
         [HttpGet]
         public ActionResult AddCar()
         {
-            return View();
+            var auto = new Automobiles();
+            return View(auto);
         }
 
         [HttpPost]
-        public string AddCar(string model, string manufacturer)
+        public ActionResult AddCar(Automobiles auto)
         {
-            try
+            var sql = "insert into Automobiles values(@Mod, @Manufact)";
+            if (ModelState.IsValid)
             {
-                using (SqlConnection connection = new SqlConnection(conString))
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("insert into Automobiles values(@Model, @Manufacturer)", connection);
-                    connection.Open();
-                    cmd.Parameters.AddWithValue("@Model", model);
-                    cmd.Parameters.AddWithValue("@Manufacturer", manufacturer);
-                    cmd.ExecuteNonQuery();
-                    connection.Close();
+                    using (var db = new SqlConnection(conString))
+                    {
+                        db.Execute(sql, new { Mod = auto.Model, Manufact = auto.Manufacturer });
+                    }
+                    return View(auto);
                 }
-                return "Car added" + " <a href=' / '>Return to main page</a>";
+                catch
+                {
+                    return View(auto);
+                }
             }
-            catch
-            {
-                return "Something went wrong";
-            }
+            return View(auto);
         }
     }
 }

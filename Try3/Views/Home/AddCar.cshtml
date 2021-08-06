@@ -1,32 +1,44 @@
-﻿@{
-    Layout = null;
+﻿@model Try3.Models.Automobiles
+
+@{
+    ViewBag.Title = "AddCar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>New car</title>
-</head>
-<body>
-    <div>
-        <h3>Adding new car</h3>
-        <form method="post" action="">
-            <input type="hidden" value=null name="Auto_Id" />
-            <table>
-                <tr>
-                    <td><p>Enter model</p></td>
-                    <td><input type="text" name="Model" /> </td>
-                </tr>
-                <tr>
-                    <td><p>Enter manufacturer:</p></td>
-                    <td>
-                        <input type="text" name="Manufacturer" />
-                    </td>
-                </tr>
-                <tr><td><input type="submit" value="Add new car" /> </td><td></td></tr>
-            </table>
-        </form>
+<h2>AddCar</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Automobiles</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Model, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Model, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Model, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Manufacturer, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Manufacturer, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Manufacturer, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
     </div>
-</body>
-</html>
+}
+
+<div>
+    @Html.ActionLink("Back to Home", "Index")
+</div>
