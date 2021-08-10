@@ -7,10 +7,11 @@
 
 <h2>AddCar</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
+
     @Html.AntiForgeryToken()
-    
+    @Html.ValidationSummary(true)
     <div class="form-horizontal">
         <h4>Automobiles</h4>
         <hr />

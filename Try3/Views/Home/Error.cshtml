@@ -1,0 +1,8 @@
+﻿@model Try3.Models.Error
+@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2><font size="5" color="red">@Model.Message</font> | @Html.ActionLink("Back to Home", "Index")</h2>
+

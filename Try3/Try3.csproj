@@ -128,6 +128,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Automobiles.cs" />
+    <Compile Include="Models\Error.cs" />
     <Compile Include="Models\MyDatabase.cs" />
     <Compile Include="Models\Purchases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -179,6 +180,7 @@
     <Content Include="Views\Home\PurchaseDeleted.cshtml" />
     <Content Include="Views\Home\UpdatePurchase.cshtml" />
     <Content Include="Views\Home\PurchaseUpdated.cshtml" />
+    <Content Include="Views\Home\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
